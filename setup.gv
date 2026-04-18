@@ -1,0 +1,203 @@
+digraph {
+	edge [fontname=Tahoma; fontsize=10]
+	node [shape=none; fontname=Tahoma; fontsize=10]
+	nodesep=0.5;
+	ranksep=0.5;
+	compound=true;
+	labeljust=l
+	fontname=Tahoma; fontsize=10
+	
+	// label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+	// 			<TR><TD ALIGN="left"><FONT POINT-SIZE="8">................................................................................</FONT></TD></TR>
+	// 			<tr><td ALIGN="LEFT" BALIGN="left">VoIP deployment map"</td></tr>
+	// 			<TR><TD ALIGN="left"><FONT POINT-SIZE="8">................................................................................</FONT></TD></TR>
+	// 			<tr><td ALIGN="LEFT">ver.: 0.1.2604181610</td></tr>
+	// 			<TR><TD ALIGN="left"><FONT POINT-SIZE="8">................................................................................</FONT></TD></TR>
+	// 			<tr><td ALIGN="LEFT"><FONT POINT-SIZE="8" FACE="monospace">dot -Tsvg -O *.gv</FONT></td></tr>
+	// 			<TR><TD ALIGN="left"><FONT POINT-SIZE="8">................................................................................</FONT></TD></TR>
+	// 			</TABLE>>
+	
+
+	subgraph cluster10{
+		label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+				<TR><TD><b>House subsystem</b></TD></TR>
+				</TABLE>>
+
+		subgraph cluster19{
+			bgcolor="gray97"
+			label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+					<TR><TD rowspan="3"><img src="./assets/ico_pi.jpg"/></TD>
+						<TD><b>Linux Server</b></TD></TR>
+					<TR><TD>[Hardware System]</TD></TR>
+					<TR><TD>Raspberry Pi3B</TD></TR>
+					</TABLE>>
+
+			asterisk[
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><b>Asterisk</b></TD></TR>
+						<TR><TD>[Software System]</TD></TR>
+						<TR><TD>SIP service</TD></TR>
+						</TABLE>>
+			]
+			dnsmasq[
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><b>Dnsmasq</b></TD></TR>
+						<TR><TD>[Software System]</TD></TR>
+						<TR><TD>DHCP, DNS, TFTP services</TD></TR>
+						</TABLE>>
+			]
+			ha[
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><b>Home Assistant</b></TD></TR>
+						<TR><TD>[Software System]</TD></TR>
+						<TR><TD>"Smart Home" services</TD></TR>
+						</TABLE>>
+			]
+		}
+
+
+		tel88_1 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+						<TR><TD><img src="./assets/ico_8865.jpg"/></TD></TR>
+						<TR><TD><b>PoE, SIP Phone</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Cisco 8865</TD></TR>
+						</TABLE>>]
+		tel88_2 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+						<TR><TD><img src="./assets/ico_8865.jpg"/></TD></TR>
+						<TR><TD><b>PoE, SIP Phone</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Cisco 8865</TD></TR>
+						</TABLE>>]
+
+		telVG [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+						<TR><TD><img src="./assets/ico_VG.jpg"/></TD></TR>
+						<TR><TD><b>Voice Gate</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Cisco VG204XM</TD></TR>
+						</TABLE>>]
+		telAn_1 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+						<TR><TD><img src="./assets/ico_pulse.jpg"/></TD></TR>
+						<TR><TD><b>Pulse dial phone</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Analogue telephone</TD></TR>
+						</TABLE>>]
+		telAn_2 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+						<TR><TD><img src="./assets/ico_tone.jpg"/></TD></TR>
+						<TR><TD><b>DTMF tone dial phone</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Analogue telephone</TD></TR>
+						</TABLE>>]
+
+		comp_1 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+						<TR><TD><b>Mobile Phone</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						</TABLE>>]
+		comp_2 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+						<TR><TD><b>Laptop</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						</TABLE>>]
+	}
+
+	subgraph cluster18{
+		bgcolor="gray97"
+		label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+				<TR><TD><b>Car gate subsystem</b></TD></TR>
+				</TABLE>>
+		db_1 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_vto.jpg"/></TD></TR>
+						<TR><TD><b>PoE, SIP Doorbell</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Dahua VTO2202F-P<br/>outside of the property; on a stand</TD></TR>
+						</TABLE>>]
+		gate_1 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_sgo.jpg"/></TD></TR>
+						<TR><TD><b>Property car gate</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Automatic sliding gate opener</TD></TR>
+						</TABLE>>]
+		gate_1i [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_sgi.jpg"/></TD></TR>
+						<TR><TD><b>Gate closure indicator</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Closure indicator</TD></TR>
+						</TABLE>>]
+		gate_1s1 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_sgs.jpg"/></TD></TR>
+						<TR><TD><b>Photocell sensor</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Obstruction sensor</TD></TR>
+						</TABLE>>]
+		gate_1s2 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_wcs.jpg"/></TD></TR>
+						<TR><TD><b>Gate feedback sensor</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Closure feedback sensor</TD></TR>
+						</TABLE>>]
+		loop [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_vdl.jpg"/></TD></TR>
+						<TR><TD><b>Vehicle detection loop sensor</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Internal automatic gate opening loop sensor<br/>internally on the gate approach</TD></TR>
+						</TABLE>>]
+	}
+
+	subgraph cluster17{
+		bgcolor="gray97"
+		label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3">
+				<TR><TD><b>Yard entrance subsystem</b></TD></TR>
+				</TABLE>>
+		db_2 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_vto.jpg"/></TD></TR>
+						<TR><TD><b>PoE, SIP Doorbell</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Dahua VTO2202F-P<br/>outside of the property; inside of the fence gate pillar</TD></TR>
+						</TABLE>>]
+		gate_2 [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">\
+						<TR><TD><img src="./assets/ico_ell.jpg"/></TD></TR>
+						<TR><TD><b>Yard wicket</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Electric door opener</TD></TR>
+						</TABLE>>]
+		gate_2s [
+				label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="3" bgcolor="white">
+						<TR><TD><img src="./assets/ico_wcs.jpg"/></TD></TR>
+						<TR><TD><b>Wicket closure feedback sensor</b></TD></TR>
+						<TR><TD>[Hardware System]</TD></TR>
+						<TR><TD>Closure feedback sensor</TD></TR>
+						</TABLE>>]
+	}
+
+	telVG -> {telAn_1, telAn_2}[dir=back, color="purple"]
+
+
+	{dnsmasq} -> {tel88_1, tel88_2, telVG}[dir=back; color="grey"]
+
+	asterisk -> {db_1, db_2, tel88_1, tel88_2, telVG}[dir=back; color="orange"]
+	ha -> {db_1, db_2}[color="blue"]
+	ha -> {comp_1, comp_2}[dir=back; color="blue"]
+
+	{db_1, db_2} -> {comp_1, comp_2}[label="rtsp:// stream"; color="green" fontcolor="green"]
+
+	loop -> db_1 -> gate_1
+	gate_1 -> gate_1s1[dir=back]
+	gate_1 -> gate_1i
+	db_1 -> gate_1s2[dir=back]
+
+	db_2 -> gate_2
+	db_2 -> gate_2s[dir=back]
+}
