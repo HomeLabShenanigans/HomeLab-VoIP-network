@@ -108,7 +108,7 @@ According to people who do own multiple devices - "It's all the same device" (wi
 
 
 # High Level View
-![](./setup.gv.svg)
+![](./setup.gv.png)
 
 ## Plain Old Telephone Service (POTS)
 To enable analogue telephones to take part in this very digital environment we need a way to create an environment that will allow the phones to participate as they ware connected to a telephone service coming from a regular telco. To do this we can use:
