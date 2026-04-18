@@ -1,7 +1,7 @@
 # Home(Lab) VoIP network
 Raspberry Pi Asterisk SIP and Cisco VG204XM Voice Gate supporting VoIP with Cisco 8865 and pulse dial phones, modem dialup love, fax, Dahua DHI-VTO2202F-P doorbell. Configuration, deployment, automation and features (paging, intercom, gate opening...)
 
-![](./assets/lot.JPG){width=100%}
+![](./assets/lot.JPG)
 
 # Project goal
 Deploy a house-wide / multi-room / small office / home-lab video capable VoIP network for internal and external communication and automation.
@@ -108,7 +108,7 @@ According to people who do own multiple devices - "It's all the same device" (wi
 
 
 # High Level View
-<embed src="./setup.gv.svg" width="100%"/>
+![](./setup.gv.svg)
 
 ## Plain Old Telephone Service (POTS)
 To enable analogue telephones to take part in this very digital environment we need a way to create an environment that will allow the phones to participate as they ware connected to a telephone service coming from a regular telco. To do this we can use:
