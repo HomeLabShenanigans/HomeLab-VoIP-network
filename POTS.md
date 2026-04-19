@@ -11,15 +11,15 @@ This config connects "local", analogue line connections to networking/VoIP domai
 
 ### Polish TELEKOM TELCZA Aster/A
 
-![](./assets/aster.JPG | width=40%)
+![](./assets/aster.JPG)
 
-![](./assets/Aster.bw.jpgv | width=40%)
+![](./assets/Aster.bw.jpgv)
 
 ### Old Polish payphone AW-652
 
 [Marcin Marciniak on YouTube](https://www.youtube.com/watch?v=UMcaoPy4UzA)
 
-![](./assets/652.PNG | width=40%)
+![](./assets/652.PNG)
 
 
 ## DTMF Dial Phones
