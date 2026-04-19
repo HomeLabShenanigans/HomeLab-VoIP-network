@@ -13,7 +13,7 @@ This config connects "local", analogue line connections to networking/VoIP domai
 
 ![](./assets/aster.JPG)
 
-![](./assets/Aster.bw.jpgv)
+![](./assets/Aster.bw.jpg)
 
 ### Old Polish payphone AW-652
 
