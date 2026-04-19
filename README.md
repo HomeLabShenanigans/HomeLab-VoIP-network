@@ -4,7 +4,7 @@ Raspberry Pi Asterisk SIP and Cisco VG204XM Voice Gate supporting VoIP with Cisc
 ![](./assets/lot.JPG)
 
 # Project goal
-Deploy a house-wide / multi-room / small office / home-lab video capable VoIP network for internal and external communication and automation.
+Deploy a house-wide / multi-room / small office / home-lab video capable VoIP network for internal and external communication and automation. ...without a need for exotic or unobtainable hardware. ...and also not needing to sell you kidney to pay for it ;) Electronics labeled End Of Life by the manufacturers, in most of the cases, work perfectly fine.
 
 ## Requirements
 
@@ -109,6 +109,10 @@ According to people who do own multiple devices - "It's all the same device" (wi
 
 # High Level View
 ![](./setup.gv.png)
+
+SIP (Session Initiation Protocol) server functions as an orchestrator by acting as the centralised signalling control plane that manages the calls setup, modification, and teardown of real-time voice, video, and messaging sessions. Independently to telephony camera enabled devices are capable of producing secondary video streams over RTP - something that can be viewed with VLC player or even embedded into HTML.
+
+I want to avoid custom hardware and utilise interoperability of established standards leveraging Open Source solutions.
 
 ## Plain Old Telephone Service (POTS)
 To enable analogue telephones to take part in this very digital environment we need a way to create an environment that will allow the phones to participate as they ware connected to a telephone service coming from a regular telco. To do this we can use:
