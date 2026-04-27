@@ -4,9 +4,9 @@ Raspberry Pi Asterisk SIP and Cisco VG204XM Voice Gate supporting VoIP with Cisc
 ![](./assets/lot.JPG)
 
 # Project goal
-Deploy a house-wide / multi-room / small office / home-lab video capable VoIP network for internal and external communication and automation. ...without a need for exotic or unobtainable hardware. ...and also not needing to sell you kidney to pay for it ;) Electronics labeled End Of Life by the manufacturers, in most of the cases, work perfectly fine.
+Deploy a house-wide / multi-room / small office / home-lab video capable VoIP network for internal and external communication and automation. ...without a need for exotic or unobtainable hardware. ...and also not needing to sell you kidney to pay for it ;) Electronics labeled, by the manufacturers, "End Of Life" work perfectly fine in most of the cases. This is especially true with an old enterprise gear that has been designed to work 24/7.
 
-## Requirements
+## Functional Requirements:
 
 - The deployment shall be self-contained and fully offline capable
 - The infrastructure shall be provisioned in Infrastructure as Code fashion (Ansible)
@@ -18,7 +18,7 @@ Deploy a house-wide / multi-room / small office / home-lab video capable VoIP ne
 - Solution shall be capable of text-to-speach (TTS) and integrating as notification system
 - Telephone network shall support both, Pulse and DTMF, dialling standards
 - Video VoIP doorbell shall be deployed on the network and integrated with the phone system allowing to interact with person at the entrance from any terminal in the house
-- Video VoIP doorbell shall be accessable as instant, 24/7 video stream on the network
+- Video VoIP doorbell shall be accessible as instant, 24/7 video stream on the network
 - Solution shall provision for fax support
 - Solution shall provision for Dial-up modem (PPP) connectivity
 - Home Assistant integration shall be possible
@@ -32,11 +32,10 @@ Deploy a house-wide / multi-room / small office / home-lab video capable VoIP ne
 - [Dahua DHI-VTO2202F-P 2MP IP Door Station](VTO2202F-P.md)
 - [Pulse dial phones](POTS.md#pulse-dial-phones)
 - [DTMF phones](POTS.md#dtmf-dial-phones)
-- US Robotix Courier modem (dial-up traffic)
+- [US Robotix Courier modem](Courier.md) (dial-up traffic)
 - PoE capable switch
 
 ## Pulse & DTMF dialling capable ATAs an Voice Gates
-References: [List of Pulse dialling Capable ATAs and Hardware](https://www.classicrotaryphones.com/forum/index.php?topic=20386.0)
 
 [VG204XM setup details](VG204XM.md)
 
@@ -74,12 +73,16 @@ References: [List of Pulse dialling Capable ATAs and Hardware](https://www.class
 - Primus Lingo iAN-02EX
 - UTStartCom iAN-02EX
 
-\*) Works but In-call DTMF Generation is very weird, I don't 100% recommend but other then that it's a decent ATA that puts a nice 4 REN on the line and works with NEON MWI! FXO Outpulsing in Pulse works great. Good for an SxS switch to get on NPSTN or C\*NET.
+\*) Works but In-call DTMF Generation is very weird, I don't 100% recommend but other then that it's a decent ATA that puts a nice 4 REN on the line and works with NEON MWI! Good for an SxS switch to get on NPSTN or C\*NET.
 
 \*\*) Untested Should work, according to Grandstream
 
+References:
+
+- List of Pulse dialling Capable ATAs and Hardware [https://www.classicrotaryphones.com/forum/index.php?topic=20386.0](https://www.classicrotaryphones.com/forum/index.php?topic=20386.0)
+
 ## DTMF only ATAs
-According to people who do own multiple devices - "It's all the same device" (with some web UI changes and outer shell). Same electronics running it since ~1996. [Cathode Ray Dude YouTube](https://youtu.be/dEEddujTlog?si=q3NiZNms80uWjQFK&t=1102)
+According to people who do own multiple devices - "It's all the same device" (with some web UI changes and outer shell). Same electronics running it since ~1996. [Cathode Ray Dude YouTube in his "Here's All My Phone Stuff" [https://youtu.be/dEEddujTlog?si=q3NiZNms80uWjQFK&t=1102](https://youtu.be/dEEddujTlog?si=q3NiZNms80uWjQFK&t=1102)]
 
 [PAP2T setup details](PAP2T.md)
 
@@ -107,23 +110,25 @@ According to people who do own multiple devices - "It's all the same device" (wi
 - XML Cisco 8800 series configuration files
 
 
-# High Level View
+# High Level Design
 ![](./setup.gv.png)
 
-SIP (Session Initiation Protocol) server functions as an orchestrator by acting as the centralised signalling control plane that manages the calls setup, modification, and teardown of real-time voice, video, and messaging sessions. Independently to telephony camera enabled devices are capable of producing secondary video streams over RTP - something that can be viewed with VLC player or even embedded into HTML.
+SIP (Session Initiation Protocol) server functions as an orchestrator by acting as the centralised signalling control plane that manages the calls setup, modification, and teardown of real-time voice, video, and messaging sessions.
+
+Independently to telephony, camera enabled devices are capable of producing secondary video streams over RTP - something that can be viewed with VLC player or even embedded into HTML. This feature is also used to feed into Machine Vision / AI / Object Recognition software for movement detection and more advanced intelligent object detection and processing.
 
 I want to avoid custom hardware and utilise interoperability of established standards leveraging Open Source solutions.
 
 ## Plain Old Telephone Service (POTS)
-To enable analogue telephones to take part in this very digital environment we need a way to create an environment that will allow the phones to participate as they ware connected to a telephone service coming from a regular telco. To do this we can use:
+To enable analogue telephones to take part in this very digital environment we need a way to create an environment that will allow the phones to participate as they ware connected to a telephone service coming from a regular telco. To do this I used:
 
 - Voice Gateway [Cisco VG204XM](VG204XM.md)
 - Analog Telephone Adapter (ATA) [Linksys PAP2T](PAP2T.md)
 
-[Cisco VG204XM](VG204XM.md) instructions are quite universal. While they do reference Voice Gateway directly it is easy to transpose those to any Cisco IOS running device.
+[Cisco VG204XM](VG204XM.md) instructions are quite universal for Cisco IOS (Internetwork Operating System) managed devices. While I reference here Voice Gateway directly it is easy to transpose those to any Cisco IOS running device.
 
 ## SIP phones
-[Cisco VoIP phones](8800.md) to work and connect require a whole range of devices to admin and configure the environment they interact with. Sadly while most of manuals focus on proprietary solutions, in this document, I am soly focussing on what those phones receive and how to deliver it while usin open source alternatives - XML configuration files served from a TFTP server, network settings done with DHCP Server (IP, Network Mask, Network Gateway, TFTP Server IP),...
+[Cisco VoIP phones](8800.md) even to start working and connecting - they require a range of services to configure and admin them as well as to provide the overarching environment they interact with. Sadly most of manuals focus on proprietary solutions. In this document, I am focussing mainly on communications received by these phones, and means how to deliver it using open source alternatives - XML configuration files served from a TFTP server, network settings done with DHCP Server (IP, Network Mask, Network Gateway, TFTP Server IP),...
 
 # Definitions & notes
 ## Asterisk

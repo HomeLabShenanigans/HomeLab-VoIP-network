@@ -1,5 +1,5 @@
 # Cisco VG204XM Voice Gate configuration
-Following configurations are for various scenarios and can vary on the user needs. While not all of them are necessary, my goal is to explain benefits and drawbacks of the features. This is the set that caught my attention while working on my setup.
+Following configurations can be useful in various scenarios and can vary on the user needs. While not all of them are necessary, my goal is to explain benefits, drawbacks and consequences of these features. The set that follows caught my attention while working on my setup.
 
 # Cisco IOS commands for Cisco VG202XM, VG204XM Voice Gateways (VG224, VG248 probably too)
 Cisco VG202XM and VG204XM are a newer iteration on Cisco VG202 and VG204 Voice Gateways and for the purpose of this document we can treat them as the same item. VG224, VG248, VG300 and even VG400 series with much larger banks of ports are similar but personally I don't own one therefore I can't reliably say where similarities end.
@@ -8,6 +8,8 @@ Cisco VG202XM and VG204XM are a newer iteration on Cisco VG202 and VG204 Voice G
 
 # Prerequisites - external supporting services
 <small>_Configuration and running of the DHCP and TFTP servers is outside of the scope for this document. (I use DNSmasq as it incapsulates DNS, TFTP and PXE Servers - all in one)_</small>
+
+Go and check _./Ansimble/_ of this repo for setup automation.
 
 ## DHCP
 It is very handy to have a DHCP Server on your network to automatically assign TCP/IP settings. Additionally, if you have greater control over DHCP, it will be useful to have additional options set:
@@ -25,18 +27,20 @@ It is very handy to have a DHCP Server on your network to automatically assign T
 Having said that a regular (within your router) DHCP is perfectly fine.
 
 ## TFTP
-TFTP is a must. Cisco phones use this as a transport of configuration files. Make sure there is Read/Write (RW) access when setting up TFTP server. This way we will be able to offload config and firmware of/onto the device for backup and upgrade. 
+TFTP is a must for 8865. Cisco phones use this as a source of configuration files necescary during boot process. Firmware upgrade process also uses TFTP. 
+
+As far as VG204XM is concerned - it's a handy way to transfer config  files in and out. Make sure there is Read/Write (RW) access when setting up TFTP server. This way we will be able to offload config and firmware of/onto the device for backup and upgrade. 
 
 # Connecting to VG204XM
-Voice Gate can connect over serial port as wellas be connected directly to dialup modem and be dialed-in remotely over a regular phone line.
+Voice Gate can connect over serial port as well as it can be connected directly to dialup modem and be "dialed-in" over a regular phone line which could have been essential in some cases of remote administration.
 
-I will demonstrate how to setup a Telnet and SSH server, but serial port communication is essential. The most low level communication with the device can be done only with the use of serial connection.
+I will demonstrate how to setup a Telnet and SSH server, but serial port communication is essential before we start. The pre-boot communication with the device can be done only with the use of serial connection. You also need serial connection to configure Telnet and/or SSH.
 
-To connect to a serial port, available on Console / AUX port, we can use DB9 TO RJ45 cable. 
+To connect to a serial port, available on _Console / AUX_ port, we can use DB9 TO RJ45 cable. 
 
 ![](./assets/serial_cabel.JPG)
 
-If you can't aquire the genuine cable - here is the pinout:
+If you can't aquire a "genuine Cisco cable" - here is the pinout:
 ```
   RJ45     DB9 (female)
 -------   -----------------------------
@@ -54,13 +58,13 @@ If you can't aquire the genuine cable - here is the pinout:
 
 ![](./assets/serial_pinout.png)
 
-While serial ports over the DB9 connector, in modern times, are very retro all computers still support it. These days you can connect to it over USB.
+While, in modern times, serial communication over the DB9 connector is very retro and all computers still support the protocol, these days you probably prefere to connect to it over USB. You don't need a 1990's Windows 95 machine with DB9 serial port.
 
 ![](./assets/rs232-usb.JPG)
 
 On the computer side we use a terminal software. Putty - Windows, minicom - Linux. After initial setup we can also use Telnet or SSH over the network to connect remotely.
 
-## Basic command for Minicom:
+## Basics for Minicom command:
 ```
 minicom -d /dev/tty0 -b 9600
 
@@ -189,28 +193,125 @@ __startup-config__ - configuration stored in the NVRAM of the device that is loa
 __running-config__ - current configuration. The one affected by your changes, the one the device is currently running but not yet stored for persistence post-boot.
 
 ## Check if you have access
+Several scenarios are possible. The best situation would be when there is no password for configuration level access. The default password is "cisco". I would also try "admin", "password", "root". If there is no way for you to obtain the password you have to boot the device in such way that it skips reading saved in NVRAM configuration and boots with the _factry defaults_.
 
+## What if you are locked out?
+I'm not deep diving here in the subjects like "Erase existing config to gain access" or "Get into ROMMON". There is already a metric ton of information on the subject, on the internet, by the people with much more experience than me. If you're interested with that - search and shall you find.
 
->>> connect and check what you see
+Just to briefly mention, there are several different configuration registers that you can use to tell the device to boot in certain way:
 
-
-Several scenarios are possible. There is no password for configuration level access, the password is set to "cisco"(default), there is no way for you to obtain password, ...
-
-I'm not describing here subjects like "Erase existing config to gain access" or "Get into ROMMON". There is already a metric ton of information, on the internet, by the people with much more experience than me. If you're interested with that - search and shall you find.
-
-Just to briefly mention, there are several different configuration registers that you can find useful:
-
-- 0x2102 - the default, the device will boot normally when that is the setting
+- 0x2102 - the default, the device will boot normally reading the config from NVRAM
 - 0x2120 - boot into ROMMON mode
-- 0x2142 - ignore the contents of NVRAM while booting (startup-config)
+- 0x2142 - ignore the contents of NVRAM (startup-config) while booting and start with _factry defaults_ in RAM.
 
-## If you are locked out
+## Let's gain access
+To get into ROMMON you need to issue "__break__" command.
 
->>> gain access
+Firstly - let's switch on the device
+```
+System Bootstrap, Version 12.4(20r)YA2, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 2013 by cisco Systems, Inc.
 
+VG204XM platform with 262144 Kbytes of main memory
+
+Upgrade ROMMON initialized
+```
+Secondly - break boot sequence and get into ROMMON mode
+
+If you connect via minicom - this command is issued by key combination _CTRL + a_ followed by _f_ key.
+```
+rommon 1 >
+```
+
+## ROMMON commands
+```
+rommon 1 > ?
+
+alias               set and display aliases command
+boot                boot up an external process
+confreg             configuration register utility
+cont                continue executing a downloaded image
+context             display the context of a loaded image
+cookie              display contents of cookie PROM in hex
+dev                 list the device table
+dir                 List files in directories-dir <directory>
+dis                 display instruction stream
+frame               print out a selected stack frame
+help                monitor builtin command help
+history             monitor command history
+iomemset            set IO memory percent
+meminfo             main memory information
+repeat              repeat a monitor command
+reset               system reset
+rommon-pref         Select ROMMON
+set                 display the monitor variables
+showmon             display currently selected ROM monitor
+stack               produce a stack trace
+sync                write monitor environment to NVRAM
+sysret              print out info from last system return
+tftpdnld            tftp image download
+  usage: tftpdnld [-hru]
+    Use this command for disaster recovery only to recover an image via TFTP.
+    Monitor variables are used to set up parameters for the transfer.
+    (Syntax: "VARIABLE_NAME=value" and use "set" to show current variables.)
+    "ctrl-c" or "break" stops the transfer before flash erase begins.
+
+    The following variables are REQUIRED to be set for tftpdnld:
+              IP_ADDRESS: The IP address for this unit
+          IP_SUBNET_MASK: The subnet mask for this unit
+         DEFAULT_GATEWAY: The default gateway for this unit
+             TFTP_SERVER: The IP address of the server to fetch from
+               TFTP_FILE: The filename to fetch
+
+    The following variables are OPTIONAL:
+            TFTP_VERBOSE: Print setting. 0=quiet, 1=progress(default), 2=verbose
+        TFTP_RETRY_COUNT: Retry count for ARP and TFTP (default=18)
+            TFTP_TIMEOUT: Overall timeout of operation in seconds (default=7200)
+           TFTP_CHECKSUM: Perform checksum test on image, 0=no, 1=yes (default=1)
+                 FE_PORT: Port number to use, 0 (default) to 1
+
+    Command line options:
+     -h: this help screen
+     -r: do not write flash, load to DRAM only and launch image
+     -u: upgrade the rommon, system will reboot once upgrade is complete
+
+unalias             unset a monitor variable
+unset               unset a monitor variable
+xmodem              x/ymodem image download
+```
+
+### Example: downloading new firmware and running it from DRAM - without saving it to the NVRAM (e.g. for testing)
+
+```
+rommon 2 > IP_ADDRESS=192.168.0.10
+rommon 3 > IP_SUBNET_MASK=255.255.255.0
+rommon 4 > DEFAULT_GATEWAY=192.168.0.1
+rommon 5 > TFTP_SERVER=192.168.0.1
+rommon 6 > TFTP_FILE=vg20xxm-ipvoice-mz.153-2.T.bin
+rommon 7 > tftpdnld -r
+
+          IP_ADDRESS: 192.168.0.10
+      IP_SUBNET_MASK: 255.255.255.0
+     DEFAULT_GATEWAY: 192.168.0.1
+         TFTP_SERVER: 192.168.0.1
+           TFTP_FILE: vg20xxm-ipvoice-mz.153-2.T.bin
+        TFTP_MACADDR: f4:ea:67:15:1f:68
+        TFTP_VERBOSE: Progress
+    TFTP_RETRY_COUNT: 18
+        TFTP_TIMEOUT: 7200
+       TFTP_CHECKSUM: Yes
+             FE_PORT: 0
+
+Receiving vg20xxm-ipvoice-mz.153-2.T.bin from 192.168.0.1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+File reception completed.
+Validating checksum.
+
+loading image vg20xxm-ipvoice-mz.153-2.T.bin 
+```
 
 ## Store settings and firmware copy outside of the device
-Cisco VG202XM and VG204XM have no USB / Flash interface. To transfer data to/from device is over serial port or over the network (TFTP).
+Cisco VG202XM and VG204XM have no USB / Flash interface. To transfer data to/from device you can use serial port or do it over the network (TFTP).
 
 Before you start messing around - __save the state of the device that is proven to work__.
 
@@ -237,26 +338,10 @@ Destination filename [firmware]?
 Router#												; now, on your TFTP Server, you have a copy of the device firmware it came with
 ```
 
-### Upgrade firmware on the device from TFTP
-Once on your Server, you can check MD5 of the file and confirm (with Cisco download pages) that the firmware has not been tempered with
-
-```
-Router> en 											; get into privileged mode
-Router# copy tftp firmware
-Address or name of remote host []? 191.168.0.1 		; adjust "remote host" & "filename" for your setup.
-Destination filename [firmware]? vg20xxm-ipvoice-mz.159-3.M12.bin
-
-Router#												; your device is ready to restart into new firmware
-```
-
 ## Factory reset
-If you decide to reset to Defaults - the easiest way is to save the "no configuration" state to "startup-config". The device will restart and apply it allowing you all access as the access data will not persist.
+If you decide to reset to _Defaults_ - the easiest way is to save the "no configuration" state to the "startup-config". The device will restart and apply it allowing you all access as the access config (password) is stored in the configuration records.
 
->>> reset
-
-
-
-## Save the new (“no configuration”) settings for persistence after reboots
+### Save the new (“no configuration”) settings for persistence after reboots
 Show current operating configuration, including any changes you have just made.
 ```
 Router# show running-config
@@ -365,10 +450,24 @@ Router# show startup-config
 ```
 __Write the current running configuration to NVRAM__, where it overwrites the startup configuration and becomes the new startup configuration.
 
-If you reboot the Cisco VG202, Cisco VG202XM, Cisco VG204, or Cisco VG204XM Voice Gateway or turn off the power before you complete this step, you lose the configuration.
+If you reboot the Cisco VG202, Cisco VG202XM, Cisco VG204, or Cisco VG204XM Voice Gateway or turn off the power before you complete the folowing _copy_ step - you will lose the RAM configuration and boot into password protected device again.
 ```
 Router> en
 Router# copy running-config startup-config
+```
+
+## Upgrading firmware on the device from TFTP
+When you are in ROMMON or in a "privileged commands" ("en") mode - you can upload new firmware.
+
+Cisco publishes checksums of all versions of the firmware. It might be smart to check MD5 of the file and confirm (with Cisco download pages) that the firmware you downloaded form anywhere but Cisco download pages has not been tempered with.
+
+```
+Router> en                    ; get into privileged mode
+Router# copy tftp firmware
+Address or name of remote host []? 191.168.0.1    ; adjust "remote host" & "filename" for your setup.
+Destination filename [firmware]? vg20xxm-ipvoice-mz.159-3.M12.bin
+
+Router#                       ; your device is ready to restart into new firmware
 ```
 
 # Cisco Voice Gate system configuration
@@ -383,7 +482,7 @@ Router(config-line)# speed 115200
 ```
 __HERE YOUR CONNECTION BREAKS! As the device already set itself to the new speed.__ Terminate your _minicom_ connection
 ```
-<CTRL-a><x>
+<CTRL+a><x>
 ```
 From now on, whenever you connect, use baudrate 115200.
 
@@ -857,5 +956,19 @@ VG204(config-voiceport)#caller-id enable
 VG204(config-voiceport)# exit
 VG204(config)# exit
 ```
+
+
+
+
+
+
+xxxxxxxxxxxx
+
+## POTS / analogue telephone switch
+This config allows for "local", analogue line connections only. This config has no networking/VoIP elements in it. Use the bellow if you want to establish your local telco.
+## POTS / analogue telephones with SIP Trunk to Asterisk
+This config connects "local", analogue line connections to networking/VoIP domain. Use the bellow if you want to establish your local telco. Also you will need this if you decide to connect to commercial VoIP provider and start making outgoing calls to the rest of telecommunication network.
+
+
 
 
